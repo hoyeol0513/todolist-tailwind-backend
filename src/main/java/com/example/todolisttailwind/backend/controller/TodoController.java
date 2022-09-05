@@ -44,8 +44,8 @@ public class TodoController {
     //수정 method : put, patch
     //put은 전부, patch는 일부
     @PatchMapping("{id}")
-    public void checkTodo(@PathVariable("id") Integer id, HttpServletResponse response) throws IOException{
+    public List<Todo> checkTodo(@PathVariable("id") Integer id, HttpServletResponse response) throws IOException{
         todoService.checkTodo(id, response);
+        return todoService.getTodos();
     }
-
 }
