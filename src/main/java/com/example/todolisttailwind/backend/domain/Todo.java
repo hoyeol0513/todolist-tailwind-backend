@@ -15,5 +15,5 @@ public class Todo {
     private String content;
 
     @Column(columnDefinition = "tinyint(1) default 1")
-    private boolean checked;
+    private Boolean checked;
 }

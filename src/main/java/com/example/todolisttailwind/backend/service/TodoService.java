@@ -28,6 +28,8 @@ public class TodoService {
     public List<Todo> getTodos() {
         return todoRepository.findAll();
     }
+
+    //원래는 service에서 response를 받지 않고 controller에서 받음.
     public void deleteTodo(Integer id, HttpServletResponse response) throws IOException {
         Optional<Todo> todo = todoRepository.findById(id);
         if(todo.isPresent()){
@@ -37,7 +39,7 @@ public class TodoService {
             //에러 response
             ResponseDTO responseDTO = new ResponseDTO();
             responseDTO.setCode("F-1");
-            responseDTO.setMessage("이미 삭제된 할 일입니다.");
+            responseDTO.setMessage("이미 삭제되거나 없는 할 일입니다.");
             response.setStatus(404);
             //에러 헤더 필요
             response.setHeader("content-type", "application/json;charset=utf-8");
@@ -47,5 +49,22 @@ public class TodoService {
         }
 
 
+    }
+
+    public void checkTodo(Integer id, HttpServletResponse response) throws IOException {
+        Optional<Todo> todo = todoRepository.findById(id);
+        if(todo.isPresent()){
+            Todo targetTodo = todo.get();
+            targetTodo.setChecked(!targetTodo.getChecked());
+            todoRepository.save(targetTodo);
+        }else{ //delete와 동일한 로직
+            ResponseDTO responseDTO = new ResponseDTO();
+            responseDTO.setCode("F-2");
+            responseDTO.setMessage("이미 삭제되거나 없는 할 일입니다.");
+            response.setStatus(404);
+            response.setHeader("content-type", "application/json;charset=utf-8");
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(response.getOutputStream(), responseDTO);
+        }
     }
 }
